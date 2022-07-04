@@ -12,12 +12,16 @@ public class RedisRepository {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
-    public void testAdd() {
-        redisTemplate.opsForSet().add("test", "eee", "fff");
+    public Long setAdd(String key, String... values) {
+        return redisTemplate.opsForSet().add(key, values);
     }
 
-    public Set<String> testQuery() {
-        return redisTemplate.opsForSet().members("test");
+    public Long setRemove(String key, Object... values) {
+        return redisTemplate.opsForSet().remove(key, values);
+    }
+
+    public Set<String> findByKey(String key) {
+        return redisTemplate.opsForSet().members(key);
     }
 
 }
