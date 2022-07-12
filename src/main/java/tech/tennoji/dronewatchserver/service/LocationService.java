@@ -29,7 +29,7 @@ public class LocationService {
     @Autowired
     private FirebaseMessagingService messagingService;
 
-    private final long maxDistance = 100L;
+    private final double maxDistance = 100L;
 
     private final String droneComingMessageTitle = "Drone approaching!";
 
@@ -43,7 +43,7 @@ public class LocationService {
 
     private final String areaCollectionPrefix = "area-";
 
-    public int reportLocation(String droneId, long longitude, long latitude) {
+    public int reportLocation(String droneId, double longitude, double latitude) {
         List<GeoFence> fenceList = mongoRepository.findFencesByLocation(longitude, latitude, maxDistance);
         if (fenceList.size() > 0) {
             // There is at least one area near the drone
@@ -61,7 +61,7 @@ public class LocationService {
         }
     }
 
-    public int reportLocationWithImage(String droneId, long longitude, long latitude, String imagePath) {
+    public int reportLocationWithImage(String droneId, double longitude, double latitude, String imagePath) {
         DroneRecord record = new DroneRecord();
         record.setMetadata(new DroneMetadata(droneId));
         record.setImagePath(imagePath);

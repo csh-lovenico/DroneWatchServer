@@ -45,14 +45,14 @@ public class MongoRepository {
         return result.getDeletedCount();
     }
 
-    public List<GeoFence> findFencesByLocation(long longitude, long latitude, long distance) {
+    public List<GeoFence> findFencesByLocation(double longitude, double latitude, double distance) {
         GeoJsonPoint point = new GeoJsonPoint(longitude, latitude);
         Query query = new Query();
         query.addCriteria(Criteria.where("location").nearSphere(point).minDistance(0).maxDistance(distance));
         return mongoTemplate.find(query, GeoFence.class, "fence");
     }
 
-    public long findFencesByNameAndLocation(long longitude, long latitude, long distance, String name) {
+    public long findFencesByNameAndLocation(double longitude, double latitude, double distance, String name) {
         GeoJsonPoint point = new GeoJsonPoint(longitude, latitude);
         Query query = new Query();
         query.addCriteria(Criteria.where("name").is(name).andOperator(Criteria.where("location").nearSphere(point).maxDistance(distance)));
@@ -69,7 +69,7 @@ public class MongoRepository {
 
     public List<Subscription> findSubscriptionByToken(String token) {
         Query query = new Query();
-        query.addCriteria(Criteria.where("token").is(token));
+        query.addCriteria(Criteria.where("token").is(token)).with(Sort.by("topic").ascending());
         return mongoTemplate.find(query, Subscription.class, "subscription");
     }
 
