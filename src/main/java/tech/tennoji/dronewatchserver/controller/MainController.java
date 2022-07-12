@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tech.tennoji.dronewatchserver.entity.DroneRecord;
+import tech.tennoji.dronewatchserver.entity.FenceStatus;
 import tech.tennoji.dronewatchserver.entity.JsonResponse;
 import tech.tennoji.dronewatchserver.service.FileStorageService;
 import tech.tennoji.dronewatchserver.service.LocationService;
@@ -52,8 +53,8 @@ public class MainController {
 
     @PostMapping("/upload")
     public JsonResponse<Integer> uploadImage(@RequestParam("droneId") String droneId,
-                                             @RequestParam("longitude") long longitude,
-                                             @RequestParam("latitude") long latitude,
+                                             @RequestParam("longitude") double longitude,
+                                             @RequestParam("latitude") double latitude,
                                              @RequestParam("file") MultipartFile file) {
         try {
             String filename = fileStorageService.storeFile(file);
@@ -67,8 +68,8 @@ public class MainController {
 
     @PostMapping("/reportLocation")
     public JsonResponse<Integer> reportLocation(@RequestParam("droneId") String droneId,
-                                                @RequestParam("longitude") long longitude,
-                                                @RequestParam("latitude") long latitude) {
+                                                @RequestParam("longitude") double longitude,
+                                                @RequestParam("latitude") double latitude) {
         try {
             int result = locationService.reportLocation(droneId, longitude, latitude);
             return new JsonResponse<>(HttpStatus.OK.value(), "ok", result);
@@ -82,7 +83,7 @@ public class MainController {
     public JsonResponse<Integer> subscribeTopic(@RequestParam("token") String token,
                                                 @RequestParam("area") String area) {
         try {
-            int result = subscriptionService.subscribeTopic(token, area);
+            int result = subscriptionService.subscribeToTopic(token, area);
             if (result == 0) {
                 return new JsonResponse<>(HttpStatus.OK.value(), "ok", 0);
             } else {
@@ -98,7 +99,7 @@ public class MainController {
     public JsonResponse<Integer> unsubscribeTopic(@RequestParam("token") String token,
                                                   @RequestParam("area") String area) {
         try {
-            subscriptionService.unsubscribeTopic(token, area);
+            subscriptionService.unsubscribeToTopic(token, area);
             return new JsonResponse<>(HttpStatus.OK.value(), "ok", 0);
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -136,6 +137,16 @@ public class MainController {
         } catch (Exception e) {
             return new JsonResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), null);
 
+        }
+    }
+
+    @GetMapping("/getSubscribedAreaStatus")
+    public JsonResponse<List<FenceStatus>> getSubscribedAreaStatus(@RequestParam("token") String token) {
+        try {
+            var result = subscriptionService.getSubscribedAreaStatus(token);
+            return new JsonResponse<>(HttpStatus.OK.value(), "ok", result);
+        } catch (Exception e) {
+            return new JsonResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), null);
         }
     }
 
