@@ -53,8 +53,8 @@ public class MainController {
 
     @PostMapping("/upload")
     public JsonResponse<Integer> uploadImage(@RequestParam("droneId") String droneId,
-                                             @RequestParam("longitude") double longitude,
-                                             @RequestParam("latitude") double latitude,
+                                             @RequestParam("x") double longitude,
+                                             @RequestParam("y") double latitude,
                                              @RequestParam("file") MultipartFile file) {
         try {
             String filename = fileStorageService.storeFile(file);
@@ -62,14 +62,15 @@ public class MainController {
             return new JsonResponse<>(HttpStatus.OK.value(), "ok", result);
         } catch (Exception e) {
             log.error(e.getMessage());
+            e.printStackTrace();
             return new JsonResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), -1);
         }
     }
 
     @PostMapping("/reportLocation")
     public JsonResponse<Integer> reportLocation(@RequestParam("droneId") String droneId,
-                                                @RequestParam("longitude") double longitude,
-                                                @RequestParam("latitude") double latitude) {
+                                                @RequestParam("x") double longitude,
+                                                @RequestParam("y") double latitude) {
         try {
             int result = locationService.reportLocation(droneId, longitude, latitude);
             return new JsonResponse<>(HttpStatus.OK.value(), "ok", result);
