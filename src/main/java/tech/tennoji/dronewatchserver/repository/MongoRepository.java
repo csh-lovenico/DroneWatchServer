@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
+import tech.tennoji.dronewatchserver.entity.DroneMetadata;
 import tech.tennoji.dronewatchserver.entity.DroneRecord;
 import tech.tennoji.dronewatchserver.entity.GeoFence;
 import tech.tennoji.dronewatchserver.entity.Subscription;
@@ -53,10 +54,12 @@ public class MongoRepository {
     }
 
     public long findFencesByNameAndLocation(double longitude, double latitude, double distance, String name) {
-        GeoJsonPoint point = new GeoJsonPoint(longitude, latitude);
+        var point = new GeoJsonPoint(longitude, latitude);
         Query query = new Query();
-        query.addCriteria(Criteria.where("name").is(name).andOperator(Criteria.where("location").nearSphere(point).maxDistance(distance)));
-        return mongoTemplate.count(query, GeoFence.class, "fence");
+        query.addCriteria(Criteria.where("name").is(name));
+        query.addCriteria(Criteria.where("location").nearSphere(point).maxDistance(distance));
+        var result = mongoTemplate.findOne(query, GeoFence.class, "fence");
+        return (result != null) ? 1 : 0;
     }
 
     public void addFence(GeoFence fence) {
@@ -79,7 +82,7 @@ public class MongoRepository {
 
     public DroneRecord findLatestDroneRecordByDrone(String droneId) {
         Query query = new Query();
-        query.addCriteria(Criteria.where("droneId").is(droneId));
+        query.addCriteria(Criteria.where("metadata").is(new DroneMetadata(droneId)));
         query.with(Sort.by(Sort.Direction.DESC, "timestamp"));
         query.limit(1);
         var result = mongoTemplate.find(query, DroneRecord.class, "drone_image_record");
