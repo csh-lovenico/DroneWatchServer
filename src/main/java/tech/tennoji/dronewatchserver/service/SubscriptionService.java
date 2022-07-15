@@ -24,6 +24,8 @@ public class SubscriptionService {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
+    private final String areaCollectionPrefix = "area-";
+
     public int subscribeToTopic(String token, String topic) {
         try {
             mongoRepository.addSubscription(new Subscription(token, topic));
@@ -52,7 +54,7 @@ public class SubscriptionService {
                 }
         ).collect(Collectors.toList());
         statusList.forEach(status -> {
-            Long num = redisTemplate.opsForSet().size(status.getName());
+            Long num = redisTemplate.opsForSet().size(areaCollectionPrefix + status.getName());
             status.setNumber(Objects.requireNonNullElse(num, 0).longValue());
         });
         return statusList;
