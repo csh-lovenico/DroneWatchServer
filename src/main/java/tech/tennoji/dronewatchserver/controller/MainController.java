@@ -151,4 +151,14 @@ public class MainController {
         }
     }
 
+    @GetMapping("/getAreaDroneList")
+    public JsonResponse<List<String>> getAreaDroneList(@RequestParam("area") String area) {
+        try {
+            var result = locationService.getAreaDroneList(area);
+            return new JsonResponse<>(HttpStatus.OK.value(), "ok", result);
+        } catch (Exception e) {
+            return new JsonResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), null);
+        }
+    }
+
 }

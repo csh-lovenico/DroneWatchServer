@@ -11,6 +11,7 @@ import tech.tennoji.dronewatchserver.repository.MongoRepository;
 import tech.tennoji.dronewatchserver.repository.RedisRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -107,5 +108,9 @@ public class LocationService {
 
     public DroneRecord getLatestRecord(String droneId) {
         return mongoRepository.findLatestDroneRecordByDrone(droneId);
+    }
+
+    public List<String> getAreaDroneList(String area) {
+        return new ArrayList<>(redisRepository.findByKey(areaCollectionPrefix + area));
     }
 }
