@@ -108,7 +108,7 @@ public class MainController {
         }
     }
 
-    @GetMapping("/getSubscribedAreas")
+    @PostMapping("/getSubscribedAreas")
     public JsonResponse<List<String>> getSubscribedAreas(@RequestParam("token") String token) {
         try {
             var result = subscriptionService.getSubscribedTopics(token);
@@ -119,7 +119,7 @@ public class MainController {
         }
     }
 
-    @GetMapping("/getNotSubscribedAreas")
+    @PostMapping("/getNotSubscribedAreas")
     public JsonResponse<List<String>> getNotSubscribedAreas(@RequestParam("token") String token) {
         try {
             var result = subscriptionService.getNotSubscribedTopics(token);
@@ -141,7 +141,7 @@ public class MainController {
         }
     }
 
-    @GetMapping("/getSubscribedAreaStatus")
+    @PostMapping("/getSubscribedAreaStatus")
     public JsonResponse<List<FenceStatus>> getSubscribedAreaStatus(@RequestParam("token") String token) {
         try {
             var result = subscriptionService.getSubscribedAreaStatus(token);
