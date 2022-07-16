@@ -62,7 +62,7 @@ public class SubscriptionService {
 
     public List<String> getNotSubscribedTopics(String token) {
         var allTopics = mongoRepository.findAllAreas().stream().map(GeoFence::getName).collect(Collectors.toList());
-        var subscribedTopics = mongoRepository.findSubscribersByTopic(token).stream().map(Subscription::getTopic).collect(Collectors.toList());
+        var subscribedTopics = mongoRepository.findSubscriptionByToken(token).stream().map(Subscription::getTopic).collect(Collectors.toList());
         allTopics.removeAll(subscribedTopics);
         return allTopics;
     }
