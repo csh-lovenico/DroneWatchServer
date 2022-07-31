@@ -131,10 +131,14 @@ public class MainController {
     }
 
     @GetMapping("/getLatestRecord")
-    public JsonResponse<DroneRecord> getLatestRecord(@RequestParam("droneId") String droneId) {
+    public JsonResponse<DroneRecord> getLatestRecord(@RequestParam("droneId") String droneId, @RequestParam("area") String area) {
         try {
-            var result = locationService.getLatestRecord(droneId);
-            return new JsonResponse<>(HttpStatus.OK.value(), "ok", result);
+            var result = locationService.getLatestRecord(droneId, area);
+            if (result != null) {
+                return new JsonResponse<>(HttpStatus.OK.value(), "ok", result);
+            } else {
+                return new JsonResponse<>(HttpStatus.NOT_FOUND.value(), "no latest record", null);
+            }
         } catch (Exception e) {
             return new JsonResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), null);
 

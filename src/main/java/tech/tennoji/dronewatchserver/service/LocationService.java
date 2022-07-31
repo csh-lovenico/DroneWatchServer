@@ -106,8 +106,13 @@ public class LocationService {
         }
     }
 
-    public DroneRecord getLatestRecord(String droneId) {
-        return mongoRepository.findLatestDroneRecordByDrone(droneId);
+    public DroneRecord getLatestRecord(String droneId, String area) {
+        var droneList = redisRepository.findByKey(areaCollectionPrefix + area);
+        if (droneList.size() == 0 || !droneList.contains(droneId)) {
+            return null;
+        } else {
+            return mongoRepository.findLatestDroneRecordByDrone(droneId);
+        }
     }
 
     public List<String> getAreaDroneList(String area) {
