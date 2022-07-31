@@ -92,7 +92,7 @@ public class LocationService {
                 redisRepository.setRemove(droneCollectionPrefix + droneId, area);
                 redisRepository.setRemove(areaCollectionPrefix + area, droneId);
                 String body = String.format(droneLeaveMessageBody, area);
-                messagingService.sendMessageToTopic(droneLeaveMessageTitle, body, null, area);
+//                messagingService.sendMessageToTopic(droneLeaveMessageTitle, body, null, area);
                 areaCount.decrementAndGet();
             }
 
